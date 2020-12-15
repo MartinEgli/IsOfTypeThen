@@ -8,10 +8,15 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
             var x = new ClassA();
-            x.IsOfTypeThen<ClassA, ClassB>((a) => a.Value);
-            x.IsOfTypeThen<ClassB>((a) => a.Value);
+            var r1 = x.IsOfTypeThen<ClassA, ClassB>((a) => a.Value == string.Empty);
+            var r2 = x.IsOfTypeThen((ClassB a) => a.Value == string.Empty);
+            var r3 = x.OfTypeThen<ClassB, string>((a) => a.Value);
+            var r4 = x.OfTypeThen((ClassB a) => a.Value);
+            var r5 = x.TryOfTypeThen<ClassB, string>((a) => a.Value, out var s1);
+            var r6 = x.TryOfTypeThen((ClassB a) => a.Value, out var s2);
+            var r7 = x.TryOfTypeThen<ClassB, string>((a) => a.Value, out var s3, "");
+            var r8 = x.TryOfTypeThen((ClassB a) => a.Value, out var s4, "");
         }
     }
 
@@ -22,7 +27,7 @@ namespace ConsoleApp1
 
     public class ClassB
     {
-        public bool Value { get; set; }
+        public string Value { get; set; }
 
     }
 
@@ -70,6 +75,19 @@ namespace ConsoleApp1
             }
 
             return function(s);
+        }
+
+        public static bool TryOfTypeThen<TTarget, TResult>(this object source, Func<TTarget, TResult> function, out TResult value, TResult @default = default)
+        {
+            value = @default;
+            if (function == null) throw new ArgumentNullException(nameof(function));
+            if (!(source is TTarget s))
+            {
+                return false;
+            }
+
+            value = function(s);
+            return true;
         }
     }
 
