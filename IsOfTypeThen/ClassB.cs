@@ -1,4 +1,4 @@
-﻿namespace ConsoleApp1
+﻿namespace IsOfTypeThen
 {
     public class ClassB
     {
